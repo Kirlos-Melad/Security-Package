@@ -16,7 +16,27 @@ namespace SecurityLibrary.AES
         /// <returns>Mul inverse, -1 if no inv</returns>
         public int GetMultiplicativeInverse(int number, int baseN)
         {
-            throw new NotImplementedException();
+            int[] A = { 1, 0, baseN}, B = { 0, 1, number}, oldB;
+            int q;
+
+            while((B[2] != 0) && (B[2] != 1))
+            {
+                q = A[2]/B[2];
+
+                oldB = (int[])B.Clone();
+                B[0] = A[0] - (q * B[0]);
+                B[1] = A[1] - (q * B[1]);
+                B[2] = A[2] - (q * B[2]);
+
+                A[0] = oldB[0];
+                A[1] = oldB[1];
+                A[2] = oldB[2];
+            }
+
+            if (B[2] == 0)
+                return -1;
+            else
+                return Helper.Mod(B[1], baseN);
         }
     }
 }

@@ -264,7 +264,7 @@ namespace SecurityLibrary
                 int determinant = this.Determinant2x2();
                 if (determinant == 0)
                     throw new Exception("Can't find inverse of matrix with Zero determinant");
-                determinant = Helper.NumberInverse(determinant, MOD);
+                determinant = Helper.MultiplicativeInverse(determinant, MOD);
                 newMatrix = this.Adjoint2x2().Multiply(determinant);
             }
             else if(rowSize == 3)
@@ -272,7 +272,7 @@ namespace SecurityLibrary
                 int determinant = this.Determinant3x3();
                 if (determinant == 0)
                     throw new Exception("Can't find inverse of matrix with Zero determinant");
-                determinant = Helper.NumberInverse(determinant, MOD);
+                determinant = Helper.MultiplicativeInverse(determinant, MOD);
                 Matrix adjoint = this.Cofactor3x3().Transpose();
 
                 newMatrix = adjoint.Multiply(determinant);

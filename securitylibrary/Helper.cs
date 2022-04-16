@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SecurityLibrary.AES;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,18 +50,15 @@ namespace SecurityLibrary
             y = temp;
         }
 
-        public static int NumberInverse(int n, int mod)
+        public static int MultiplicativeInverse(int n, int mod)
         {
-            int i = 1;
-            while (Helper.Mod(i * n, mod) != 1 && i != 26)
-            {
-                i++;
-            }
+            ExtendedEuclid extendedEuclidean = new ExtendedEuclid();
+            int result = extendedEuclidean.GetMultiplicativeInverse(Mod(n, mod), mod);
 
-            if (i == 26)
+            if (result == -1)
                 throw new Exception("Can't find determinant inverse");
 
-            return i;
+            return result;
         }
 
         public static List<int> ConvertStringToIntList(String text)
