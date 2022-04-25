@@ -61,7 +61,7 @@ namespace SecurityLibrary
             return result;
         }
 
-        public static List<int> ConvertStringToIntList(String text)
+        public static List<int> ConvertStringToIntList(string text)
         {
             List<int> intList = new List<int>();
             text = text.ToLower();
@@ -86,6 +86,24 @@ namespace SecurityLibrary
             }
 
             return s;
+        }
+
+        public static byte[][] ConvertStringToSquareByte(string str)
+        {
+            byte[] array1D = Encoding.ASCII.GetBytes(str);
+            int size = (int)Math.Sqrt(str.Length);
+
+            byte[][] squareByte = new byte[size][];
+            for(int i = 0; i < size; i++)
+            {
+                squareByte[i] = new byte[size];
+                for(int j = 0; j < size; j++)
+                {
+                    squareByte[i][j] = array1D[(i * size) + j];
+                }
+            }
+
+            return squareByte;
         }
     }
 }
