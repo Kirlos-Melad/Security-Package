@@ -89,15 +89,15 @@ namespace SecurityLibrary.AES
              2,   3,   1,   1 ,
              1,   2,   3,   1 ,
              1,   1,   2,   3 ,
-             3,   1,   1,   2 
+             3,   1,   1,   2
         };
 
         private int[] INV_MIX_COLUMNS_MATRIX =
         {
              14,  11,  13,  9 ,
-             9,  14,  11,  13 ,
-             13,  9,  14,  11 ,
-             11,  13,  9,  14 
+             9 ,  14,  11,  13,
+             13,  9 ,  14,  11,
+             11,  13,  9 ,  14
         };
 
         private void RotateWord(ref byte[] word, Direction direction)
@@ -107,16 +107,78 @@ namespace SecurityLibrary.AES
                 for (int i = 0; i < size - 1; i++)
                     (word[i], word[i + 1]) = (word[i + 1], word[i]);
 
-            else if(direction == Direction.Right)
+            else if (direction == Direction.Right)
                 for (int i = size - 1; i > 0; i--)
                     (word[i], word[i - 1]) = (word[i - 1], word[i]);
         }
 
-        public void LeftShiftByOne(ref BitArray bitArray) {
-            for (int i = 1; i < bitArray.Count; i++)
-                bitArray[i - 1] = bitArray[i];
-            
-            bitArray[bitArray.Count - 1] = false;
+        private byte[] ShiftRow(byte[] text, Direction direction)
+        {
+
+            byte[] final = new byte[16];
+            if (direction == Direction.Right)
+            {
+                int counter = 0;
+                int x = 0;
+                byte[] subText = new byte[text.Length];
+                // cols >> rows
+                for (int j = 0; j < 4; j++)
+                {
+                    for (int i = j; i < text.Length; i += 4)
+                    {
+                        subText[counter] = text[i];
+                        counter++;
+                    }
+                }
+
+                counter = 0;
+                byte[] finalRows = new byte[16];
+                byte[] rows = new byte[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        rows[j] = subText[counter];
+                        counter++;
+                    }
+
+                    if (i > 0)
+                        for (int j = 0; j < i; j++)
+                            RotateWord(ref rows, direction);
+
+                    for (int j = 0; j < 4; j++)
+                    {
+                        finalRows[x] = rows[j];
+                        x++;
+                    }
+                }
+
+                // rows >> cols
+                counter = 0;
+                for (int j = 0; j < 4; j++)
+                {
+                    for (int i = j; i < text.Length; i += 4)
+                    {
+                        final[counter] = finalRows[i];
+                        counter++;
+                    }
+                }
+            }
+            else
+            {
+
+            }
+
+            return final;
+        }
+
+        public void ShiftByOne(ref string cell)
+        {
+
+            string temp = cell;
+            for (int i = 0; i > 7; i++)
+                cell += temp[i - 1];
+
         }
 
         public static byte[] XOR(byte[] arr1, byte[] arr2)
@@ -129,9 +191,17 @@ namespace SecurityLibrary.AES
             return result;
         }
 
-        public byte[] SubstituteBox(byte[] word)
+        public static string XOR_string(byte a, byte b)
         {
-            for(int i = 0; i < 4; i++)
+            byte result;
+            result = (byte)(a ^ b);
+
+            return result.ToString();
+        }
+
+        public byte[] SubstituteBox(byte[] word, byte[,] matrix)
+        {
+            for (int i = 0; i < word.Length; i++)
             {
                 string hexaStr = word[i].ToString();
                 int decimalNum = int.Parse(hexaStr);
@@ -143,116 +213,111 @@ namespace SecurityLibrary.AES
                     index1 = Convert.ToInt32(hexaStr[0].ToString(), 16);
                     index2 = Convert.ToInt32(hexaStr[1].ToString(), 16);
                 }
-                word[i] = Sbox[index1,index2];
+                word[i] = matrix[index1, index2];
             }
             return word;
         }
 
         public static byte[] ConvertStringToByteArray(string hex)
         {
-            byte[] arr = new byte[hex.Length >> 1];
-
-            for (int i = 0; i < hex.Length >> 1; ++i)
-                arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
-
-            return arr;
+            return Enumerable.Range(0, hex.Length)
+                     .Where(x => x % 2 == 0)
+                     .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                     .ToArray();
         }
 
-        public static int GetHexVal(char hex)
+        public byte[] MixColumns(byte[] text, int[] matrix)
         {
-            int val = (int)hex;
-            return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
-        }
+            string[] binaryText = text.Select(x => Convert.ToString(x, 2).PadLeft(8, '0')).ToArray();
 
-        public void MixColumns(byte[] plain)
-        {
-            BitArray[] plainBits = new BitArray[plain.Length];
-            BitArray xorValue = new BitArray(new byte[] {0x1B});
+            string xorValue = "00011011";
 
-            for (int i = 0; i < plain.Length; i++) 
-                plainBits[i] = new BitArray(new byte[] { plain[i] });
-
-            for(int i = 0; i < 16; i++)
+            for (int i = 0; i < binaryText.Length; i++)
             {
-                for(int j = 1; j < MIX_COLUMNS_MATRIX[i]; j++)
+                string cell = binaryText[i];
+                if (matrix[i] == 9)
                 {
-                    bool isOne = plainBits[i].Get(7);
-                    LeftShiftByOne(ref plainBits[i]);
-                    if (isOne)
-                        plainBits[i].Xor(xorValue);
-                }
-            }
-
-            int counter = 0;
-            for(int i = 0; i < 16; i++)
-            {
-                counter = 0;
-                for(int x = 0; x < 4; x++)
-                {
-                    BitArray[] vector = new BitArray[4];
-                    for (int j = 1; j < MIX_COLUMNS_MATRIX[i]; j++)
+                    if (cell[0] == '1')
                     {
-                        bool isOne = plainBits[i].Get(7);
-                        LeftShiftByOne(ref plainBits[i]);
-                        if (isOne)
-                            plainBits[i].Xor(xorValue);
+                        ShiftByOne(ref cell);
+
                     }
-                    counter++;
                 }
+
             }
+            return null;
+        }
+
+        public static byte[] BitArrayToByteArray(BitArray bits)
+        {
+            byte[] ret = new byte[(bits.Length - 1) / 8 + 1];
+            bits.CopyTo(ret, 0);
+
+            return ret;
+        }
+
+        private void AddRoundKey(byte[] key, ref byte[] text)
+        {
+            text = XOR(text, key);
         }
 
         public byte[,] GenerateKeyForAllRounds(byte[] mainKey)
         {
-            byte[,] rounds = new byte[11,16];
+            byte[,] rounds = new byte[11, 16];
             byte[,] previousWords = new byte[4, 4];
             byte[,] CurrentWords = new byte[4, 4];
             int counter = 0;
-            for(int keyCount = 0; keyCount < 16; keyCount++)
+            for (int keyCount = 0; keyCount < 16; keyCount++)
                 rounds[0, keyCount] = mainKey[keyCount];
 
-            for(int roundCount = 1; roundCount < 11; roundCount++)
+            for (int roundCount = 1; roundCount < 11; roundCount++)
             {
+
+                // get previous words of previous round
                 counter = 0;
                 for (int i = 0; i < 4; i++)
                 {
                     for (int j = 0; j < 4; j++)
                     {
-                        previousWords[i, j] = rounds[roundCount-1,counter];
+                        previousWords[i, j] = rounds[roundCount - 1, counter];
                         counter++;
                     }
                 }
 
+                // get w3 of previous round
+                byte[] previousWord3 = new byte[4];
+                for (int x = 0; x < 4; x++)
+                    previousWord3[x] = previousWords[3, x];
+                RotateWord(ref previousWord3, Direction.Left);
+                previousWord3 = SubstituteBox(previousWord3, Sbox);
+
+                // get w0 of previous round
                 byte[] previousWord0 = new byte[4];
                 for (int x = 0; x < 4; x++)
                     previousWord0[x] = previousWords[0, x];
 
-                byte[] roundConstant = ROUND_CONSTANT[roundCount-1];
+                // w0 of current round
+                byte[] roundConstant = ROUND_CONSTANT[roundCount - 1];
                 byte[] currentword0 = new byte[4];
-                currentword0 = XOR(previousWord0, roundConstant);
+                currentword0 = XOR(previousWord3, roundConstant);
+                currentword0 = XOR(currentword0, previousWord0);
 
-                byte[] previousWord3 = new byte[4];
-                for (int x = 0; x < 4; x++)
-                    previousWord3[x] = previousWords[3, x];
-                
-                RotateWord(ref previousWord3, Direction.Right);
-                previousWord3 = SubstituteBox(previousWord3);
-                currentword0 = XOR(currentword0,previousWord3);
-                
                 for (int x = 0; x < 4; x++)
                     CurrentWords[0, x] = currentword0[x];
 
+                // get w1 , w2 , w3
                 byte[] previous = new byte[4];
                 byte[] current = new byte[4];
                 byte[] word = new byte[4];
                 for (int wordNum = 1; wordNum < 4; wordNum++)
                 {
-                    for(int x = 0; x < 4; x++) { 
+                    for (int x = 0; x < 4; x++)
+                    {
                         previous[x] = previousWords[wordNum, x];
-                        current[x] = CurrentWords[wordNum-1, x];
+                        current[x] = CurrentWords[wordNum - 1, x];
                     }
                     word = XOR(previous, current);
-                    for(int x = 0; x < 4; x++)
+                    for (int x = 0; x < 4; x++)
                         CurrentWords[wordNum, x] = word[x];
                 }
 
@@ -278,18 +343,99 @@ namespace SecurityLibrary.AES
             key = key.Substring(2, key.Length - 2); //remove 0x
             byte[] keyByteArray = ConvertStringToByteArray(key);
             cipherText = cipherText.Substring(2, cipherText.Length - 2); //remove 0x
-            byte[] cipherTextArray = ConvertStringToByteArray(cipherText);
+            byte[] plainTextArray = ConvertStringToByteArray(cipherText);
             byte[,] rounds = GenerateKeyForAllRounds(keyByteArray);
-            MixColumns(cipherTextArray);
-            return null;
+
+            //Add Round Key
+            byte[] currenKey = new byte[16];
+            for (int j = 0; j < 16; j++)
+                currenKey[j] = rounds[10, j];
+            AddRoundKey(currenKey, ref plainTextArray);
+
+            for (int i = 9; i >= 0; i--)
+            {
+                //Inverse Shift Rows
+                plainTextArray = ShiftRow(plainTextArray, Direction.Right);
+
+                //Inverse Sub Bytes 
+                plainTextArray = SubstituteBox(plainTextArray, InvSBox);
+
+                //Add Round Key
+                currenKey = new byte[16];
+                for (int j = 0; j < 16; j++)
+                    currenKey[j] = rounds[i, j];
+                AddRoundKey(currenKey, ref plainTextArray);
+
+                //Inverse Mix Columns
+                plainTextArray = MixColumns(plainTextArray, INV_MIX_COLUMNS_MATRIX);
+
+                if (i == 0)
+                {
+                    //Inverse Shift Rows
+                    plainTextArray = ShiftRow(plainTextArray, Direction.Right);
+
+                    //Inverse Sub Bytes 
+                    plainTextArray = SubstituteBox(plainTextArray, InvSBox);
+
+                    //Add Round Key
+                    currenKey = new byte[16];
+                    for (int j = 0; j < 16; j++)
+                        currenKey[j] = rounds[i, j];
+                    AddRoundKey(currenKey, ref plainTextArray);
+                }
+            }
+
+            return plainTextArray.ToString().ToUpper();
         }
 
         public override string Encrypt(string plainText, string key)
         {
-            byte[][] keyMatrix = Helper.ConvertStringToSquareByte(key); 
-            byte[][] plainTextMatrix = Helper.ConvertStringToSquareByte(plainText);
-            return null;
+            key = key.Substring(2, key.Length - 2); //remove 0x
+            byte[] keyByteArray = ConvertStringToByteArray(key);
+            plainText = plainText.Substring(2, plainText.Length - 2); //remove 0x
+            byte[] cipherTextArray = ConvertStringToByteArray(plainText);
+            byte[,] rounds = GenerateKeyForAllRounds(keyByteArray);
 
+            byte[] currenKey = new byte[16];
+
+            //Add Round Key >> Round 0
+            for (int j = 0; j < 16; j++)
+                currenKey[j] = rounds[0, j];
+            AddRoundKey(currenKey, ref cipherTextArray);
+
+            for (int i = 10; i >= 0; i--)
+            {
+                //Sub Bytes 
+                cipherTextArray = SubstituteBox(cipherTextArray, Sbox);
+
+                //Shift Rows
+                cipherTextArray = ShiftRow(cipherTextArray, Direction.Left);
+
+                //Mix Columns
+                cipherTextArray = MixColumns(cipherTextArray, MIX_COLUMNS_MATRIX);
+
+                //Add Round Key
+                for (int j = 0; j < 16; j++)
+                    currenKey[j] = rounds[i, j];
+                AddRoundKey(currenKey, ref cipherTextArray);
+
+                if (i == 10)
+                {
+                    //Sub Bytes 
+                    cipherTextArray = SubstituteBox(cipherTextArray, Sbox);
+
+                    //Shift Rows
+                    cipherTextArray = ShiftRow(cipherTextArray, Direction.Left);
+
+                    //Add Round Key
+                    currenKey = new byte[16];
+                    for (int j = 0; j < 16; j++)
+                        currenKey[j] = rounds[i, j];
+                    AddRoundKey(currenKey, ref cipherTextArray);
+                }
+            }
+
+            return cipherTextArray.ToString().ToUpper();
         }
     }
 }
