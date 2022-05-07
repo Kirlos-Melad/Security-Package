@@ -35,3 +35,12 @@ C:\Users\KirlosMelad\MyFiles\Projects Working on\SecurityPackage\SecurityPackage
 C:\Users\KirlosMelad\MyFiles\Projects Working on\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.csproj.CopyComplete
 C:\Users\KirlosMelad\MyFiles\Projects Working on\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.dll
 C:\Users\KirlosMelad\MyFiles\Projects Working on\SecurityPackage\SecurityPackageTest\obj\Debug\SecurityPackageTest.pdb
+C:\Users\user\Documents\GitHub\Security-Package\SecurityPackageTest\bin\Debug\SecurityPackageTest.dll
+C:\Users\user\Documents\GitHub\Security-Package\SecurityPackageTest\bin\Debug\SecurityPackageTest.pdb
+C:\Users\user\Documents\GitHub\Security-Package\SecurityPackageTest\bin\Debug\SecurityLibrary.dll
+C:\Users\user\Documents\GitHub\Security-Package\SecurityPackageTest\bin\Debug\SecurityLibrary.pdb
+C:\Users\user\Documents\GitHub\Security-Package\SecurityPackageTest\obj\Debug\SecurityPackageTest.csproj.AssemblyReference.cache
+C:\Users\user\Documents\GitHub\Security-Package\SecurityPackageTest\obj\Debug\SecurityPackageTest.csproj.CoreCompileInputs.cache
+C:\Users\user\Documents\GitHub\Security-Package\SecurityPackageTest\obj\Debug\SecurityPackageTest.dll
+C:\Users\user\Documents\GitHub\Security-Package\SecurityPackageTest\obj\Debug\SecurityPackageTest.pdb
+C:\Users\user\Documents\GitHub\Security-Package\SecurityPackageTest\obj\Debug\SecurityPackageTest.csproj.CopyComplete

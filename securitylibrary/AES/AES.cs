@@ -191,14 +191,6 @@ namespace SecurityLibrary.AES
             return result;
         }
 
-        public static string XOR_string(byte a, byte b)
-        {
-            byte result;
-            result = (byte)(a ^ b);
-
-            return result.ToString();
-        }
-
         public byte[] SubstituteBox(byte[] word, byte[,] matrix)
         {
             for (int i = 0; i < word.Length; i++)

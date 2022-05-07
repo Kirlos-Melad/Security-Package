@@ -21,3 +21,11 @@ C:\Users\KirlosMelad\MyFiles\Projects Working on\SecurityPackage\SecurityLibrary
 C:\Users\KirlosMelad\MyFiles\Projects Working on\SecurityPackage\SecurityLibrary\bin\Debug\System.ValueTuple.dll
 C:\Users\KirlosMelad\MyFiles\Projects Working on\SecurityPackage\SecurityLibrary\bin\Debug\System.ValueTuple.xml
 C:\Users\KirlosMelad\MyFiles\Projects Working on\SecurityPackage\SecurityLibrary\obj\Debug\SecurityLibrary.csproj.CopyComplete
+C:\Users\user\Documents\GitHub\Security-Package\SecurityLibrary\bin\Debug\SecurityLibrary.dll
+C:\Users\user\Documents\GitHub\Security-Package\SecurityLibrary\bin\Debug\SecurityLibrary.pdb
+C:\Users\user\Documents\GitHub\Security-Package\SecurityLibrary\bin\Debug\System.ValueTuple.dll
+C:\Users\user\Documents\GitHub\Security-Package\SecurityLibrary\bin\Debug\System.ValueTuple.xml
+C:\Users\user\Documents\GitHub\Security-Package\SecurityLibrary\obj\Debug\SecurityLibrary.csproj.AssemblyReference.cache
+C:\Users\user\Documents\GitHub\Security-Package\SecurityLibrary\obj\Debug\SecurityLibrary.csproj.CoreCompileInputs.cache
+C:\Users\user\Documents\GitHub\Security-Package\SecurityLibrary\obj\Debug\SecurityLibrary.dll
+C:\Users\user\Documents\GitHub\Security-Package\SecurityLibrary\obj\Debug\SecurityLibrary.pdb
