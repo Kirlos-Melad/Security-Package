@@ -20,15 +20,15 @@ namespace SecurityLibrary
             {'z', 0},
         };*/
 
-        public static int Mod(int number, int mod)
+        public static long Mod(long number, long mod)
         {
-            if(number >= 0)
+            if (number >= 0)
             {
                 return number % mod;
             }
             else
             {
-                int temp = -number % mod;
+                long temp = -number % mod;
                 return -temp + mod;
             }
         }
@@ -53,7 +53,7 @@ namespace SecurityLibrary
         public static int MultiplicativeInverse(int n, int mod)
         {
             ExtendedEuclid extendedEuclidean = new ExtendedEuclid();
-            int result = extendedEuclidean.GetMultiplicativeInverse(Mod(n, mod), mod);
+            int result = extendedEuclidean.GetMultiplicativeInverse((int)Mod(n, mod), mod);
 
             if (result == -1)
                 throw new Exception("Can't find determinant inverse");

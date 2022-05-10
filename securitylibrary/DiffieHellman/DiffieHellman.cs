@@ -26,9 +26,7 @@ namespace SecurityLibrary.DiffieHellman
             if (exponent <= 10)
             {
                 for (int i = 0; i < exponent; i++)
-                {
                     result1 = result1 * b;
-                }
             }
             else
             {
@@ -42,26 +40,20 @@ namespace SecurityLibrary.DiffieHellman
                 {
                     BigInteger result3 = 1;
                     for (int j = 0; j < 10; j++)
-                    {
-                        result3 = result3 * b;
 
-                    }
+                        result3 = result3 * b;
                     ele.Add(GetModules(result3, q));
                 }
                 if (num > 0)
                 {
                     for (int i = 0; i < num; i++)
-                    {
                         result2 = result2 * b;
 
-                    }
                     ele.Add(GetModules(result2, q));
                 }
             }
             for (int i = 0; i < ele.Count; i++)
-            {
                 result1 = result1 * ele[i];
-            }
 
             return result1;
 

@@ -122,7 +122,7 @@ namespace SecurityLibrary
             {
                 for (int j = 0; j < column; j++)
                 {
-                    list.Add(Helper.Mod(this[j, i], MOD));
+                    list.Add((int)Helper.Mod(this[j, i], MOD));
                 }
             }
 
@@ -139,7 +139,7 @@ namespace SecurityLibrary
             {
                 for (int j = 0; j < columnSize; j++)
                 {
-                    newMatrix[i, j] = Helper.Mod((this[i, j] + other[i, j]), MOD);
+                    newMatrix[i, j] = (int)Helper.Mod((this[i, j] + other[i, j]), MOD);
                 }
             }
 
@@ -165,7 +165,7 @@ namespace SecurityLibrary
 
                     for (int k = 0; k < common; k++)
                     {
-                        newMatrix[i, j] += Helper.Mod(this[i, k] * other[k, j], MOD);
+                        newMatrix[i, j] += (int)Helper.Mod(this[i, k] * other[k, j], MOD);
                     }
                 }
             }

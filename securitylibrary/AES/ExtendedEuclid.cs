@@ -36,7 +36,7 @@ namespace SecurityLibrary.AES
             if (B[2] == 0)
                 return -1;
             else
-                return Helper.Mod(B[1], baseN);
+                return (int)Helper.Mod(B[1], baseN);
         }
     }
 }
